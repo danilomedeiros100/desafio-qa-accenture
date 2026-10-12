@@ -12,8 +12,8 @@ from playwright.sync_api import sync_playwright  # noqa: E402
 
 from desafio_qa.api import ClienteBookStore  # noqa: E402
 from desafio_qa.config import (  # noqa: E402
-    ATRASO_ENTRE_ACOES_MS, DIRETORIO_RAIZ, DIRETORIO_SCREENSHOTS, DIRETORIO_TRACES, HEADLESS,
-    NAVEGADOR, TAMANHO_JANELA, TIMEOUT_PADRAO_MS, URL_BASE,
+    ATRASO_ENTRE_ACOES_MS, DIRETORIO_RAIZ, DIRETORIO_SCREENSHOTS, DIRETORIO_TRACES, DIRETORIO_VIDEOS,
+    GRAVAR_VIDEO, HEADLESS, NAVEGADOR, TAMANHO_JANELA, TIMEOUT_PADRAO_MS, URL_BASE,
 )
 from desafio_qa.support import evidence, terminal  # noqa: E402
 
@@ -65,6 +65,7 @@ def before_all(context):
             f"URL base: {URL_BASE}",
             f"Navegador (front-end): {NAVEGADOR} ({'headless' if HEADLESS else 'visível'})",
             f"Filtro de tags: {tags}",
+            f"Gravação de vídeo: {'ligada' if GRAVAR_VIDEO else 'desligada'}",
         ],
     )
 
@@ -95,7 +96,11 @@ def before_scenario(context, scenario):
 
     if "frontend" in tags:
         navegador = _garantir_navegador(context)
-        context.contexto_navegador = navegador.new_context(viewport=TAMANHO_JANELA)
+        gravacao = (
+            {"record_video_dir": str(DIRETORIO_VIDEOS), "record_video_size": TAMANHO_JANELA}
+            if GRAVAR_VIDEO else {}
+        )
+        context.contexto_navegador = navegador.new_context(viewport=TAMANHO_JANELA, **gravacao)
         context.contexto_navegador.set_default_timeout(TIMEOUT_PADRAO_MS)
         context.contexto_navegador.route(HOSTS_DE_ANUNCIO, lambda rota: rota.abort())
         context.contexto_navegador.add_init_script(SCRIPT_OCULTAR_ANUNCIOS)
@@ -142,7 +147,18 @@ def after_scenario(context, scenario):
             evidence.anexar_arquivo(trace, "Trace do Playwright", "zip")
             terminal.acao(f"Trace salvo em {trace.relative_to(DIRETORIO_RAIZ)} "
                           f"(abra com: playwright show-trace {trace.relative_to(DIRETORIO_RAIZ)})")
-        context.contexto_navegador.close()
+        video = context.pagina.video if GRAVAR_VIDEO else None
+        # janelas extras (ex.: Browser Windows) também gravam vídeo; só o da página principal interessa
+        videos_extras = [p.video for p in context.contexto_navegador.pages if p is not context.pagina and p.video]
+        context.contexto_navegador.close()  # o vídeo só é finalizado depois de fechar o contexto
+        for extra in videos_extras if video else []:
+            extra.delete()
+        if video:
+            caminho_video = DIRETORIO_VIDEOS / f"{_slug(scenario.name)}.webm"
+            video.save_as(str(caminho_video))
+            video.delete()
+            evidence.anexar_video(caminho_video)
+            terminal.acao(f"Vídeo salvo em {caminho_video.relative_to(DIRETORIO_RAIZ)}")
         context.contexto_navegador = None
         context.pagina = None
 

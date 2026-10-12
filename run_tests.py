@@ -6,6 +6,7 @@ Funciona igual no Linux, macOS e Windows, pelo terminal ou pela IDE:
     python run_tests.py --tags @api             # só API
     python run_tests.py --tags @frontend        # só Front-end
     python run_tests.py --visivel               # mostra o navegador executando
+    python run_tests.py --video                 # grava um vídeo de cada cenário de front (vai para o Allure)
     python run_tests.py --sem-relatorio         # só executa os testes
     python run_tests.py --servidor              # abre o relatório via 'allure open' (com histórico)
     python run_tests.py --somente-relatorio     # só gera/abre o relatório da última execução
@@ -38,6 +39,8 @@ def ler_argumentos() -> argparse.Namespace:
                         help="filtro de tags do behave (pode repetir), ex.: --tags @api")
     parser.add_argument("--visivel", action="store_true",
                         help="abre o navegador na tela (HEADLESS=false, SLOW_MO=300)")
+    parser.add_argument("--video", action="store_true",
+                        help="grava um vídeo de cada cenário de front-end e anexa ao Allure")
     parser.add_argument("--sem-relatorio", action="store_true", help="não gera o Allure Report")
     parser.add_argument("--servidor", action="store_true",
                         help="abre o relatório com 'allure open' (servidor local) em vez de arquivo único")
@@ -56,6 +59,8 @@ def executar_testes(args: argparse.Namespace) -> int:
     if args.visivel:
         ambiente["HEADLESS"] = "false"  # sobrescreve qualquer HEADLESS herdado da IDE/terminal
         ambiente.setdefault("SLOW_MO", "300")
+    if args.video:
+        ambiente["RECORD_VIDEO"] = "true"
 
     # a saída passa por um pipe: força as cores no console e o UTF-8 (Windows)
     ambiente["PYTHONIOENCODING"] = "utf-8"

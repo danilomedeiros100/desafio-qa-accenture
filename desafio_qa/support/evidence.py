@@ -41,6 +41,10 @@ def anexar_arquivo(caminho: Path, nome: str, extensao: str) -> None:
     allure.attach.file(str(caminho), name=nome, extension=extensao)
 
 
+def anexar_video(caminho: Path) -> None:
+    allure.attach.file(str(caminho), name="Vídeo da execução", attachment_type=allure.attachment_type.WEBM)
+
+
 TIPOS_DE_TESTE = {"api": "Testes de API", "frontend": "Testes de Front-end"}
 
 # Classificação das falhas exibida na aba "Categorias" do Allure

@@ -11,6 +11,7 @@ HEADLESS = os.getenv("HEADLESS", "true").lower() not in ("false", "0", "no", "na
 ATRASO_ENTRE_ACOES_MS = int(os.getenv("SLOW_MO", "0"))
 TIMEOUT_PADRAO_MS = int(os.getenv("DEFAULT_TIMEOUT_MS", "15000"))
 TAMANHO_JANELA = {"width": 1920, "height": 1080}
+GRAVAR_VIDEO = os.getenv("RECORD_VIDEO", "false").lower() in ("true", "1", "yes", "sim")
 
 TIMEOUT_API_S = int(os.getenv("API_TIMEOUT_S", "30"))
 
@@ -18,3 +19,4 @@ ARQUIVO_UPLOAD = DIRETORIO_RAIZ / "resources" / "upload" / "arquivo_upload.txt"
 DIRETORIO_RELATORIOS = DIRETORIO_RAIZ / "reports"
 DIRETORIO_SCREENSHOTS = DIRETORIO_RELATORIOS / "screenshots"
 DIRETORIO_TRACES = DIRETORIO_RELATORIOS / "traces"
+DIRETORIO_VIDEOS = DIRETORIO_RELATORIOS / "videos"

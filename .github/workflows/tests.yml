@@ -32,6 +32,8 @@ jobs:
         id: testes
         continue-on-error: true
         run: behave -f html -o reports/report.html
+        env:
+          RECORD_VIDEO: "true"   # vídeo de cada cenário de front-end anexado ao Allure
 
       # ---------------- Allure Report ----------------
       - uses: actions/setup-java@v4
