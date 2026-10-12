@@ -1,0 +1,74 @@
+name: testes
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write   # publicar o Allure Report na branch gh-pages
+
+concurrency:
+  group: testes-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  behave:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalar dependências
+        run: |
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Executar testes (API + Frontend)
+        id: testes
+        continue-on-error: true
+        run: behave -f html -o reports/report.html
+
+      # ---------------- Allure Report ----------------
+      - name: Baixar histórico do Allure (gh-pages)
+        if: always() && github.event_name != 'pull_request'
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Gerar Allure Report
+        if: always()
+        uses: simple-elf/allure-report-action@v1.12
+        with:
+          allure_results: reports/allure-results
+          allure_report: reports/allure-report
+          gh_pages: gh-pages
+          allure_history: allure-history
+          keep_reports: 20
+
+      - name: Publicar Allure Report no GitHub Pages
+        if: always() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
+
+      - name: Publicar relatórios como artefato
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorios
+          path: |
+            reports/
+            allure-history/
+
+      - name: Falhar o job se algum teste falhou
+        if: steps.testes.outcome != 'success'
+        run: exit 1

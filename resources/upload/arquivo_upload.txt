@@ -1,0 +1,1 @@
+Arquivo de upload utilizado no cenário Practice Form do Desafio QA Automation.
