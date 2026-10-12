@@ -14,6 +14,8 @@
 
 ### [📊 Ver o relatório ao vivo](https://danilomedeiros100.github.io/desafio-qa-accenture/) · [⚙️ Execuções no GitHub Actions](https://github.com/danilomedeiros100/desafio-qa-accenture/actions/workflows/tests.yml) · [🚀 Rodar em 1 comando](#-rodando-em-1-comando)
 
+<sub>Depois de clonar, abra o <a href="README.html"><code>README.html</code></a> no navegador (dois cliques, sem servidor) para ver a apresentação visual do projeto.</sub>
+
 <img src="docs/images/relatorio-visao-geral-claro.png" alt="Accenture QA Report: visão geral do relatório Allure personalizado" width="100%">
 
 </div>

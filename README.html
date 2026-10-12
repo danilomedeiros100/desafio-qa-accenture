@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desafio QA Automation · Accenture</title>
+<link rel="icon" type="image/svg+xml" href="resources/allure/accenture-icon.svg">
+<style>
+  :root {
+    --roxo: #A100FF;
+    --roxo-escuro: #7500C0;
+    --roxo-profundo: #460073;
+    --roxo-claro: #BE82FF;
+    --roxo-suave: #F4EAFF;
+    --fundo: #F7F5FA;
+    --superficie: #FFFFFF;
+    --texto: #1B1523;
+    --texto-2: #5B5366;
+    --texto-3: #8A8396;
+    --borda: #E7E1EE;
+    --verde: #1E9E5A;
+    --verde-suave: #E3F6EC;
+    --vermelho: #D33B3B;
+    --raio: 14px;
+    --sombra: 0 1px 2px rgba(27, 21, 35, .04), 0 8px 24px rgba(27, 21, 35, .06);
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--texto);
+    background: var(--fundo);
+  }
+  a { color: var(--roxo-escuro); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; display: block; }
+  code { font-family: var(--mono); font-size: .9em; background: var(--roxo-suave); color: var(--roxo-profundo); padding: 1px 6px; border-radius: 6px; }
+  .container { width: min(1120px, 100% - 32px); margin: 0 auto; }
+
+  /* ---------- barra superior ---------- */
+  .topo {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(255, 255, 255, .85);
+    backdrop-filter: saturate(1.4) blur(10px);
+    border-bottom: 1px solid var(--borda);
+  }
+  .topo .container { display: flex; align-items: center; gap: 24px; height: 60px; }
+  .marca { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--texto); white-space: nowrap; }
+  .marca:hover { text-decoration: none; }
+  .marca svg { width: 26px; height: 26px; }
+  .marca small { font-weight: 500; color: var(--texto-3); }
+  .menu { display: flex; gap: 18px; margin-left: auto; font-size: 14px; }
+  .menu a { color: var(--texto-2); }
+  .menu a:hover { color: var(--roxo); text-decoration: none; }
+  @media (max-width: 860px) { .menu { display: none; } .topo .botao { margin-left: auto; } }
+  @media (max-width: 560px) {
+    .marca small { display: none; }
+    .marca { font-size: 15px; }
+    .topo .botao.pequeno { padding: 6px 12px; font-size: 12.5px; }
+    .status-ci { border-radius: 14px; align-items: flex-start; }
+    .status-ci .ponto { margin-top: 6px; flex: none; }
+  }
+
+  /* ---------- botões ---------- */
+  .botao {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 18px; border-radius: 999px;
+    font-weight: 600; font-size: 15px; white-space: nowrap;
+    border: 1px solid var(--borda); background: var(--superficie); color: var(--texto);
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .botao:hover { text-decoration: none; transform: translateY(-1px); box-shadow: var(--sombra); }
+  .botao.principal { background: var(--roxo); border-color: var(--roxo); color: #fff; }
+  .botao.principal:hover { background: var(--roxo-escuro); }
+  .botao.pequeno { padding: 7px 14px; font-size: 13px; }
+  .botao svg { width: 18px; height: 18px; flex: none; }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative; overflow: hidden;
+    background:
+      radial-gradient(900px 400px at 85% -10%, rgba(190, 130, 255, .35), transparent 60%),
+      linear-gradient(135deg, #12001F 0%, #2E0052 45%, #5A0096 80%, #A100FF 120%);
+    color: #fff;
+    padding: 72px 0 56px;
+  }
+  .hero .chevron-fundo { position: absolute; right: -60px; top: 30px; width: 420px; opacity: .10; }
+  .hero-grade { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 48px; align-items: center; position: relative; }
+  @media (max-width: 920px) { .hero-grade { grid-template-columns: minmax(0, 1fr); } }
+  .selo { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--roxo-claro); }
+  .hero h1 { font-size: clamp(30px, 5vw, 52px); overflow-wrap: anywhere; line-height: 1.08; letter-spacing: -.02em; margin: 14px 0 16px; }
+  .hero h1 span { background: linear-gradient(90deg, #DCAFFF, #fff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p.lead { font-size: 18px; color: rgba(255, 255, 255, .82); max-width: 560px; margin: 0 0 26px; }
+  .hero .acoes { display: flex; flex-wrap: wrap; gap: 12px; }
+  .hero .botao:not(.principal) { background: rgba(255, 255, 255, .08); border-color: rgba(255, 255, 255, .25); color: #fff; }
+  .hero .botao:not(.principal):hover { background: rgba(255, 255, 255, .16); }
+  .status-ci {
+    display: inline-flex; align-items: center; gap: 10px; margin-top: 22px;
+    padding: 8px 14px; border-radius: 999px; font-size: 14px;
+    background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .18); color: rgba(255, 255, 255, .9);
+  }
+  .status-ci .ponto { width: 9px; height: 9px; border-radius: 50%; background: #9C95A8; box-shadow: 0 0 0 4px rgba(156, 149, 168, .25); }
+  .status-ci.sucesso .ponto { background: #3DDC84; box-shadow: 0 0 0 4px rgba(61, 220, 132, .25); }
+  .status-ci.erro .ponto { background: #FF6B6B; box-shadow: 0 0 0 4px rgba(255, 107, 107, .25); }
+  .hero-imagem { border-radius: 16px; overflow: hidden; box-shadow: 0 30px 60px rgba(0, 0, 0, .45); border: 1px solid rgba(255, 255, 255, .15); cursor: zoom-in; }
+  .numeros { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 44px; position: relative; }
+  @media (max-width: 720px) { .numeros { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .numero { background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .14); border-radius: var(--raio); padding: 16px 18px; }
+  .numero strong { display: block; font-size: 30px; line-height: 1.1; letter-spacing: -.02em; }
+  .numero span { font-size: 14px; color: rgba(255, 255, 255, .72); }
+
+  /* ---------- seções ---------- */
+  section, #relatorios { scroll-margin-top: 72px; }
+  section { padding: 72px 0; }
+  section + section { padding-top: 24px; }
+  .titulo-secao { max-width: 680px; margin-bottom: 32px; }
+  .titulo-secao .selo { color: var(--roxo); }
+  .titulo-secao h2 { font-size: clamp(26px, 3.4vw, 34px); line-height: 1.15; letter-spacing: -.015em; margin: 8px 0 10px; }
+  .titulo-secao p { color: var(--texto-2); margin: 0; }
+  .cartao { background: var(--superficie); border: 1px solid var(--borda); border-radius: var(--raio); box-shadow: var(--sombra); }
+
+  /* links dos relatórios */
+  .links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: -40px; position: relative; z-index: 2; }
+  @media (max-width: 860px) { .links { grid-template-columns: minmax(0, 1fr); margin-top: 24px; } }
+  .link-cartao { display: flex; gap: 14px; padding: 20px; color: var(--texto); transition: transform .15s ease, border-color .15s ease; }
+  .link-cartao:hover { text-decoration: none; transform: translateY(-2px); border-color: var(--roxo-claro); }
+  .link-cartao .icone { width: 44px; height: 44px; border-radius: 12px; background: var(--roxo-suave); color: var(--roxo); display: grid; place-items: center; flex: none; }
+  .link-cartao .icone svg { width: 22px; height: 22px; }
+  .link-cartao h3 { margin: 0 0 2px; font-size: 16px; }
+  .link-cartao p { margin: 0; font-size: 14px; color: var(--texto-2); }
+  .link-cartao > span:last-child { min-width: 0; }
+  .link-cartao .url { display: block; margin-top: 6px; font-size: 12.5px; color: var(--roxo-escuro); word-break: break-all; }
+
+  /* destaques */
+  .destaques { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+  .destaque { padding: 22px; }
+  .destaque .emoji { font-size: 26px; line-height: 1; }
+  .destaque h3 { font-size: 17px; margin: 12px 0 6px; }
+  .destaque p { margin: 0; font-size: 14.5px; color: var(--texto-2); }
+
+  /* demo */
+  .demo { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 28px; align-items: center; }
+  @media (max-width: 920px) { .demo { grid-template-columns: minmax(0, 1fr); } }
+  .demo .midia { padding: 10px; }
+  .demo .midia img { border-radius: 10px; }
+  .lista-check { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+  .lista-check li { display: flex; gap: 12px; align-items: flex-start; color: var(--texto-2); }
+  .lista-check li::before { content: ""; flex: none; width: 22px; height: 22px; margin-top: 2px; border-radius: 50%; background: var(--verde-suave) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231E9E5A' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center / 13px no-repeat; }
+  .lista-check strong { color: var(--texto); }
+
+  /* como rodar */
+  .passos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; counter-reset: passo; }
+  @media (max-width: 920px) { .passos { grid-template-columns: minmax(0, 1fr); } }
+  .passo { padding: 22px; position: relative; }
+  .passo::before { counter-increment: passo; content: counter(passo); width: 30px; height: 30px; border-radius: 50%; background: var(--roxo); color: #fff; font-weight: 700; display: grid; place-items: center; font-size: 14px; }
+  .passo h3 { margin: 14px 0 6px; font-size: 17px; }
+  .passo p { margin: 0 0 12px; color: var(--texto-2); font-size: 14.5px; }
+  .seletor-so { display: inline-flex; padding: 4px; background: var(--superficie); border: 1px solid var(--borda); border-radius: 999px; margin-bottom: 18px; }
+  .seletor-so button { border: 0; background: transparent; font: inherit; font-size: 14px; font-weight: 600; color: var(--texto-2); padding: 7px 16px; border-radius: 999px; cursor: pointer; }
+  .seletor-so button[aria-pressed="true"] { background: var(--roxo); color: #fff; }
+  .codigo { position: relative; background: #17101F; color: #EDE6F5; border-radius: 10px; padding: 40px 16px 14px; font: 13.5px/1.6 var(--mono); white-space: pre-wrap; word-break: break-all; }
+  .codigo .comentario { color: #8F86A0; }
+  .codigo .prompt { color: var(--roxo-claro); user-select: none; }
+  .copiar { position: absolute; top: 8px; right: 8px; border: 1px solid rgba(255, 255, 255, .18); background: rgba(255, 255, 255, .06); color: #EDE6F5; font: 600 12px/1 -apple-system, sans-serif; padding: 6px 10px; border-radius: 8px; cursor: pointer; }
+  .copiar:hover { background: rgba(255, 255, 255, .14); }
+  [data-so] { display: none; }
+  [data-so].ativo { display: block; }
+  .tabela-comandos { width: 100%; border-collapse: collapse; margin-top: 22px; font-size: 14.5px; }
+  .tabela-comandos th, .tabela-comandos td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--borda); vertical-align: top; }
+  .tabela-comandos th { font-size: 12.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--texto-3); font-weight: 600; }
+  .tabela-comandos tr:last-child td { border-bottom: 0; }
+  .tabela-comandos td:first-child { color: var(--texto-2); width: 42%; }
+  .dica { margin-top: 16px; padding: 14px 18px; border-radius: 12px; background: var(--roxo-suave); color: var(--roxo-profundo); font-size: 14.5px; }
+
+  /* galeria */
+  .galeria { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  @media (max-width: 860px) { .galeria { grid-template-columns: minmax(0, 1fr); } }
+  .galeria figure { margin: 0; padding: 10px; }
+  .galeria figure.largo { grid-column: 1 / -1; }
+  .galeria img { border-radius: 10px; cursor: zoom-in; border: 1px solid var(--borda); }
+  .galeria figcaption { padding: 12px 6px 4px; font-size: 14px; color: var(--texto-2); }
+  .galeria figcaption strong { color: var(--texto); }
+  .recursos-relatorio { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+  .etiqueta { font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 999px; background: var(--superficie); border: 1px solid var(--borda); color: var(--texto-2); }
+
+  /* cobertura */
+  .tabela-cobertura { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  .tabela-cobertura th, .tabela-cobertura td { text-align: left; padding: 14px 18px; border-bottom: 1px solid var(--borda); vertical-align: top; }
+  .tabela-cobertura th { font-size: 12.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--texto-3); font-weight: 600; background: #FBF9FD; }
+  .tabela-cobertura tr:last-child td { border-bottom: 0; }
+  .tabela-cobertura td:first-child { font-weight: 600; white-space: nowrap; }
+  .ok { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; color: var(--verde); background: var(--verde-suave); padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+  .rolagem { overflow-x: auto; }
+  .tipo { font-size: 11.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 2px 8px; border-radius: 6px; margin-right: 8px; }
+  .tipo.api { background: #E6F0FF; color: #1D4FA0; }
+  .tipo.front { background: var(--roxo-suave); color: var(--roxo-escuro); }
+
+  /* arquitetura */
+  .fluxo { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; align-items: stretch; }
+  @media (max-width: 920px) { .fluxo { grid-template-columns: minmax(0, 1fr); } }
+  .etapa { padding: 18px; text-align: center; position: relative; }
+  .etapa .emoji { font-size: 24px; }
+  .etapa h3 { margin: 8px 0 4px; font-size: 15px; }
+  .etapa p { margin: 0; font-size: 13px; color: var(--texto-2); }
+  .etapa:not(:last-child)::after { content: "→"; position: absolute; right: -14px; top: 50%; transform: translateY(-50%); color: var(--roxo-claro); font-weight: 700; z-index: 1; }
+  @media (max-width: 920px) { .etapa:not(:last-child)::after { content: "↓"; right: 50%; top: auto; bottom: -19px; transform: translateX(50%); } }
+  .stack { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+
+  /* decisões */
+  details { padding: 0; margin-bottom: 12px; }
+  details summary { cursor: pointer; padding: 16px 20px; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::after { content: "+"; font-size: 20px; color: var(--roxo); font-weight: 400; }
+  details[open] summary::after { content: "–"; }
+  details .conteudo { padding: 0 20px 18px; color: var(--texto-2); font-size: 15px; }
+  details .conteudo p { margin: 0 0 8px; }
+
+  /* rodapé */
+  footer { padding: 40px 0 56px; color: var(--texto-3); font-size: 14px; border-top: 1px solid var(--borda); margin-top: 40px; }
+  footer .container { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; }
+  footer nav { display: flex; flex-wrap: wrap; gap: 18px; }
+
+  /* ampliação de imagens */
+  .lightbox { position: fixed; inset: 0; background: rgba(12, 6, 20, .88); display: none; align-items: center; justify-content: center; padding: 24px; z-index: 50; cursor: zoom-out; }
+  .lightbox.aberto { display: flex; }
+  .lightbox img { max-height: 92vh; border-radius: 12px; box-shadow: 0 30px 80px rgba(0, 0, 0, .6); }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="faixa-inferior" x1="220" y1="0" x2="640" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A100FF"/><stop offset="1" stop-color="#5A0096"/>
+    </linearGradient>
+    <symbol id="chevron" viewBox="200 30 460 460">
+      <polygon points="220,382 522,258 640,305 220,477" fill="url(#faixa-inferior)"/>
+      <polygon points="220,42 640,212 640,305 220,137" fill="#B000FF"/>
+    </symbol>
+    <symbol id="i-relatorio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l5 3.5-5 3.5z"/></symbol>
+    <symbol id="i-codigo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5"/><path d="M16 7l5 5-5 5"/></symbol>
+    <symbol id="i-pasta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  </defs>
+</svg>
+
+<header class="topo">
+  <div class="container">
+    <a class="marca" href="#inicio"><svg><use href="#chevron"/></svg> Desafio QA Automation <small>· Accenture</small></a>
+    <nav class="menu">
+      <a href="#relatorios">Relatórios</a>
+      <a href="#destaques">Destaques</a>
+      <a href="#demo">Demo</a>
+      <a href="#rodar">Como rodar</a>
+      <a href="#relatorio">O relatório</a>
+      <a href="#cobertura">Cobertura</a>
+      <a href="#arquitetura">Arquitetura</a>
+    </nav>
+    <a class="botao principal pequeno" href="https://danilomedeiros100.github.io/desafio-qa-accenture/" target="_blank" rel="noopener">Relatório ao vivo ↗</a>
+  </div>
+</header>
+
+<div class="hero" id="inicio">
+  <svg class="chevron-fundo" aria-hidden="true"><use href="#chevron"/></svg>
+  <div class="container">
+    <div class="hero-grade">
+      <div>
+        <span class="selo">Python · Behave (BDD) · Playwright · Allure</span>
+        <h1>Automação de API e Front-end com <span>relatório Accenture</span> a cada push</h1>
+        <p class="lead">Todo o desafio do demoqa.com automatizado em BDD em português, rodando com um único comando, com evidência de cada passo e um relatório Allure com a identidade da Accenture publicado automaticamente.</p>
+        <div class="acoes">
+          <a class="botao principal" href="https://danilomedeiros100.github.io/desafio-qa-accenture/" target="_blank" rel="noopener"><svg><use href="#i-relatorio"/></svg>Ver relatório ao vivo</a>
+          <a class="botao" href="https://github.com/danilomedeiros100/desafio-qa-accenture/actions/workflows/tests.yml" target="_blank" rel="noopener"><svg><use href="#i-play"/></svg>Execuções no GitHub Actions</a>
+          <a class="botao" href="https://github.com/danilomedeiros100/desafio-qa-accenture" target="_blank" rel="noopener"><svg><use href="#i-codigo"/></svg>Código</a>
+        </div>
+        <div class="status-ci" id="status-ci"><span class="ponto"></span><span id="status-ci-texto">Consultando a última execução no CI…</span></div>
+      </div>
+      <img class="hero-imagem ampliavel" src="docs/images/relatorio-visao-geral-claro.png" alt="Visão geral do Accenture QA Report">
+    </div>
+    <div class="numeros">
+      <div class="numero"><strong>100%</strong><span>do desafio, com o bônus</span></div>
+      <div class="numero"><strong>7</strong><span>cenários · 63 steps</span></div>
+      <div class="numero"><strong>1</strong><span>comando para rodar tudo</span></div>
+      <div class="numero"><strong>3</strong><span>sistemas: Linux, macOS, Windows</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="container" id="relatorios">
+  <div class="links">
+    <a class="cartao link-cartao" href="https://danilomedeiros100.github.io/desafio-qa-accenture/" target="_blank" rel="noopener">
+      <span class="icone"><svg><use href="#i-relatorio"/></svg></span>
+      <span><h3>Relatório Allure online</h3><p>Atualizado a cada push, com vídeos e histórico.</p><span class="url">danilomedeiros100.github.io/desafio-qa-accenture</span></span>
+    </a>
+    <a class="cartao link-cartao" href="https://github.com/danilomedeiros100/desafio-qa-accenture/actions/workflows/tests.yml" target="_blank" rel="noopener">
+      <span class="icone"><svg><use href="#i-play"/></svg></span>
+      <span><h3>Execuções no GitHub Actions</h3><p>Pipeline com o resultado e os artefatos de cada push.</p><span class="url">github.com/…/actions/workflows/tests.yml</span></span>
+    </a>
+    <a class="cartao link-cartao" href="reports/allure-report/index.html" target="_blank">
+      <span class="icone"><svg><use href="#i-pasta"/></svg></span>
+      <span><h3>Relatório local</h3><p>O da última execução na sua máquina (gerado pelo <code>run_tests.py</code>).</p><span class="url">reports/allure-report/index.html</span></span>
+    </a>
+  </div>
+</div>
+
+<section id="destaques">
+  <div class="container">
+    <div class="titulo-secao">
+      <span class="selo">Destaques</span>
+      <h2>Mais do que o desafio pediu, sem complicar quem vai rodar</h2>
+      <p>Cada item do enunciado está coberto, e o projeto foi pensado para ser fácil de rodar, fácil de ler e fácil de confiar.</p>
+    </div>
+    <div class="destaques">
+      <div class="cartao destaque"><div class="emoji">✅</div><h3>Desafio completo + bônus</h3><p>API e os 5 fluxos de front-end, incluindo os 12 registros criados dinamicamente pelo Gherkin.</p></div>
+      <div class="cartao destaque"><div class="emoji">🚀</div><h3>Um único comando</h3><p><code>python run_tests.py</code> roda tudo, gera o relatório e já abre no navegador. Também com botões prontos no PyCharm.</p></div>
+      <div class="cartao destaque"><div class="emoji">📊</div><h3>Allure com a cara da Accenture</h3><p>Em português e no tema claro, com logo, cores da marca e faixa de resumo. Testes separados em API e Front-end.</p></div>
+      <div class="cartao destaque"><div class="emoji">🌐</div><h3>Publicado a cada push</h3><p>O GitHub Actions roda os testes e publica o relatório no GitHub Pages, com tendência entre execuções.</p></div>
+      <div class="cartao destaque"><div class="emoji">🎬</div><h3>Evidência de tudo</h3><p>Vídeo de cada cenário de front, screenshots, requisição e resposta de cada chamada da API, trace em falhas.</p></div>
+      <div class="cartao destaque"><div class="emoji">🖥️</div><h3>Execução legível</h3><p>Cada step aparece no terminal em tempo real com o que foi feito, e um log limpo fica salvo em arquivo.</p></div>
+      <div class="cartao destaque"><div class="emoji">🧱</div><h3>Código organizado</h3><p>BDD em português, Page Objects, cliente de API, massa de dados aleatória e steps finos.</p></div>
+      <div class="cartao destaque"><div class="emoji">🛡️</div><h3>Estável de verdade</h3><p>Anúncios bloqueados, esperas inteligentes e três instabilidades do demoqa identificadas, tratadas e documentadas.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="container demo">
+    <div class="cartao midia"><img class="ampliavel" src="docs/images/demo-execucao.gif" alt="Formulário sendo preenchido com dados aleatórios e lista ordenada por drag and drop"></div>
+    <div>
+      <div class="titulo-secao" style="margin-bottom:22px">
+        <span class="selo">Veja rodando</span>
+        <h2>Gravação real da automação</h2>
+        <p>Nada de mock: é o vídeo que o próprio projeto grava durante a execução.</p>
+      </div>
+      <ul class="lista-check">
+        <li><span><strong>Formulário completo</strong> com dados aleatórios a cada execução: datepicker, autocomplete, upload e estado/cidade.</span></li>
+        <li><span><strong>Popup validado campo a campo</strong> contra o que foi enviado, não só "abriu".</span></li>
+        <li><span><strong>Drag and drop de verdade:</strong> a lista é embaralhada e depois ordenada, um movimento por vez.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="rodar">
+  <div class="container">
+    <div class="titulo-secao">
+      <span class="selo">Como rodar</span>
+      <h2>Três passos e o relatório abre sozinho</h2>
+      <p>Requisito: Python 3.10+. Para o relatório local, o Allure CLI (sem ele, os testes rodam normalmente).</p>
+    </div>
+    <div class="seletor-so" role="group" aria-label="Sistema operacional">
+      <button type="button" data-escolha="unix" aria-pressed="true">Linux / macOS</button>
+      <button type="button" data-escolha="windows" aria-pressed="false">Windows</button>
+    </div>
+    <div class="passos">
+      <div class="cartao passo">
+        <h3>Clonar</h3>
+        <p>Baixe o projeto do GitHub.</p>
+        <div class="codigo"><button class="copiar" type="button">Copiar</button>git clone https://github.com/danilomedeiros100/desafio-qa-accenture.git
+cd desafio-qa-accenture</div>
+      </div>
+      <div class="cartao passo">
+        <h3>Instalar</h3>
+        <p>Ambiente virtual, dependências e o Chromium.</p>
+        <div class="codigo ativo" data-so="unix"><button class="copiar" type="button">Copiar</button>python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python -m playwright install chromium</div>
+        <div class="codigo" data-so="windows"><button class="copiar" type="button">Copiar</button>py -3 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python -m playwright install chromium</div>
+      </div>
+      <div class="cartao passo">
+        <h3>Rodar</h3>
+        <p>Executa API + Front-end e abre o Accenture QA Report.</p>
+        <div class="codigo"><button class="copiar" type="button">Copiar</button>python run_tests.py</div>
+      </div>
+    </div>
+
+    <div class="cartao rolagem" style="margin-top:22px">
+      <table class="tabela-comandos">
+        <thead><tr><th>Quero…</th><th>Comando</th></tr></thead>
+        <tbody>
+          <tr><td>Rodar tudo e abrir o relatório</td><td><code>python run_tests.py</code></td></tr>
+          <tr><td>Ver o navegador executando</td><td><code>python run_tests.py --visivel</code></td></tr>
+          <tr><td>Só os testes de API</td><td><code>python run_tests.py --tags @api</code></td></tr>
+          <tr><td>Só os testes de Front-end</td><td><code>python run_tests.py --tags @frontend</code></td></tr>
+          <tr><td>Gravar vídeo de cada cenário</td><td><code>python run_tests.py --video</code></td></tr>
+          <tr><td>Reabrir o relatório da última execução</td><td><code>python run_tests.py --somente-relatorio</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dica"><strong>No PyCharm:</strong> as configurações já vêm no projeto. Escolha <strong>"1 - Todos os testes + Allure"</strong> no seletor do canto superior direito e clique em Run.</div>
+  </div>
+</section>
+
+<section id="relatorio">
+  <div class="container">
+    <div class="titulo-secao">
+      <span class="selo">O relatório</span>
+      <h2>Accenture QA Report: o Allure em português, com a identidade da marca</h2>
+      <p>Gerado localmente pelo <code>run_tests.py</code> e publicado pelo CI em <a href="https://danilomedeiros100.github.io/desafio-qa-accenture/" target="_blank" rel="noopener">danilomedeiros100.github.io/desafio-qa-accenture</a>. Clique nas imagens para ampliar.</p>
+    </div>
+    <div class="galeria">
+      <figure class="cartao"><img class="ampliavel" src="docs/images/relatorio-visao-geral-claro.png" alt="Visão geral no tema claro"><figcaption><strong>Visão geral:</strong> resumo da execução, suítes por tipo de teste, tendência, ambiente e executor do CI.</figcaption></figure>
+      <figure class="cartao"><img class="ampliavel" src="docs/images/relatorio-cenario-front.png" alt="Cenário de front-end com os steps expandidos"><figcaption><strong>Cenário de front-end:</strong> cada step com as ações executadas, screenshot e vídeo da execução.</figcaption></figure>
+      <figure class="cartao"><img class="ampliavel" src="docs/images/relatorio-cenario-api.png" alt="Cenário de API com requisição e resposta em JSON"><figcaption><strong>Cenário de API:</strong> cada chamada HTTP com requisição e resposta em JSON (senha mascarada).</figcaption></figure>
+      <figure class="cartao"><img class="ampliavel" src="docs/images/relatorio-visao-geral.png" alt="Visão geral no tema escuro"><figcaption><strong>Tema escuro:</strong> a um clique, com a mesma identidade visual.</figcaption></figure>
+      <figure class="cartao largo"><img class="ampliavel" src="docs/images/terminal-api.png" alt="Saída colorida da execução no terminal"><figcaption><strong>No terminal:</strong> cada step em tempo real, com as chamadas HTTP, o resultado e um resumo final. Uma cópia sem cores fica em <code>reports/execucao.log</code>.</figcaption></figure>
+    </div>
+    <div class="recursos-relatorio">
+      <span class="etiqueta">Português e tema claro por padrão</span>
+      <span class="etiqueta">Testes de API × Front-end</span>
+      <span class="etiqueta">Vídeo de cada cenário</span>
+      <span class="etiqueta">JSON das requisições</span>
+      <span class="etiqueta">Categorias de falha em português</span>
+      <span class="etiqueta">Histórico de tendência</span>
+      <span class="etiqueta">Link para a execução no CI</span>
+    </div>
+  </div>
+</section>
+
+<section id="cobertura">
+  <div class="container">
+    <div class="titulo-secao">
+      <span class="selo">Cobertura</span>
+      <h2>Cada item do enunciado, coberto e verificado</h2>
+      <p>E sempre um passo além do mínimo pedido.</p>
+    </div>
+    <div class="cartao rolagem">
+      <table class="tabela-cobertura">
+        <thead><tr><th>Enunciado</th><th>O que o teste faz</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tipo api">API</span>Book Store</td><td>Cria usuário, valida que ainda <strong>não</strong> está autorizado, gera token, confirma autorização, lista livros, aluga 2 livros e confere o usuário com os livros. Tudo numa execução contínua; o usuário é removido no final.</td><td><span class="ok">✓ Coberto</span></td></tr>
+          <tr><td><span class="tipo front">Front</span>Practice Form</td><td>Preenche todos os campos com dados aleatórios, faz upload do <code>.txt</code> versionado, submete, valida o popup <strong>campo a campo</strong> e fecha.</td><td><span class="ok">✓ Coberto</span></td></tr>
+          <tr><td><span class="tipo front">Front</span>Browser Windows</td><td>Abre a nova janela, valida "This is a sample page", fecha e garante que só a original ficou aberta.</td><td><span class="ok">✓ Coberto</span></td></tr>
+          <tr><td><span class="tipo front">Front</span>Web Tables</td><td>Cria, edita (valida os dados novos e a ausência dos antigos) e deleta um registro.</td><td><span class="ok">✓ Coberto</span></td></tr>
+          <tr><td><span class="tipo front">Front</span>Web Tables · bônus</td><td>Cria 12 registros com a quantidade vinda do Gherkin, valida todos, deleta todos e confirma que os originais continuam intactos.</td><td><span class="ok">✓ Coberto</span></td></tr>
+          <tr><td><span class="tipo front">Front</span>Progress Bar</td><td>Para antes de 25% e valida, completa 100% e reseta. Polling dentro do navegador, sem condição de corrida.</td><td><span class="ok">✓ Coberto</span></td></tr>
+          <tr><td><span class="tipo front">Front</span>Sortable</td><td>Embaralha a lista (ela já carrega ordenada) e ordena em ordem crescente com drag and drop, validando cada movimento.</td><td><span class="ok">✓ Coberto</span></td></tr>
+          <tr><td>Critérios gerais</td><td>BDD com Cucumber (Behave, com Gherkin em português), Page Objects, código organizado e versionado no GitHub.</td><td><span class="ok">✓ Coberto</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="arquitetura">
+  <div class="container">
+    <div class="titulo-secao">
+      <span class="selo">Arquitetura</span>
+      <h2>Do Gherkin ao relatório publicado</h2>
+      <p>Camadas simples e separadas: os steps só orquestram, as regras de tela ficam nos Page Objects e a evidência é gerada automaticamente.</p>
+    </div>
+    <div class="fluxo">
+      <div class="cartao etapa"><div class="emoji">📝</div><h3>Features</h3><p>Gherkin em português</p></div>
+      <div class="cartao etapa"><div class="emoji">🔗</div><h3>Steps</h3><p>Finos, só orquestram</p></div>
+      <div class="cartao etapa"><div class="emoji">🧩</div><h3>Page Objects + API</h3><p>Playwright e requests</p></div>
+      <div class="cartao etapa"><div class="emoji">🎯</div><h3>Evidências</h3><p>Vídeo, JSON, prints, log</p></div>
+      <div class="cartao etapa"><div class="emoji">📊</div><h3>Accenture QA Report</h3><p>Local e GitHub Pages</p></div>
+    </div>
+    <div class="stack">
+      <span class="etiqueta">Python 3.10+</span>
+      <span class="etiqueta">Behave (BDD)</span>
+      <span class="etiqueta">Playwright</span>
+      <span class="etiqueta">requests</span>
+      <span class="etiqueta">Faker</span>
+      <span class="etiqueta">Allure Report</span>
+      <span class="etiqueta">GitHub Actions</span>
+      <span class="etiqueta">GitHub Pages</span>
+    </div>
+  </div>
+</section>
+
+<section id="decisoes">
+  <div class="container">
+    <div class="titulo-secao">
+      <span class="selo">Decisões técnicas</span>
+      <h2>Os detalhes que deixam a automação confiável</h2>
+    </div>
+    <details class="cartao" open>
+      <summary>Instabilidades do demoqa identificadas e tratadas</summary>
+      <div class="conteudo">
+        <p><strong>Botão Close do popup:</strong> no site atual ele não fecha o modal. O teste clica em Close e, se o modal continuar aberto, fecha com ESC, registrando o motivo.</p>
+        <p><strong>Reset da Progress Bar:</strong> zera a barra, mas o timer continua e ela volta a subir. Um observador no navegador registra o valor no instante do Reset, então o 0% é validado sem depender da velocidade.</p>
+        <p><strong>Exclusão na Web Tables:</strong> excluir um registro novo remove junto os outros criados. O teste exclui os que restam e valida que nenhum sobrou e que os originais estão intactos.</p>
+      </div>
+    </details>
+    <details class="cartao">
+      <summary>Por que Playwright</summary>
+      <div class="conteudo"><p>Suporte nativo a múltiplas janelas, drag and drop HTML5, espera automática, vídeo e trace de execução, sem driver separado para instalar.</p></div>
+    </details>
+    <details class="cartao">
+      <summary>Anúncios bloqueados e navegação pelo fluxo real</summary>
+      <div class="conteudo"><p>Os banners do demoqa cobrem botões e deixam a página lenta, então as requisições de anúncio são bloqueadas. Cada cenário entra pela home, clica no card e no submenu, como pede o enunciado, e valida a URL de destino.</p></div>
+    </details>
+    <details class="cartao">
+      <summary>Massa de dados e isolamento</summary>
+      <div class="conteudo"><p>Dados aleatórios a cada execução (Faker), registros localizados pelo e-mail e não pela posição na tabela, um contexto de navegador novo por cenário e o usuário da API removido no final.</p></div>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <span>Desafio QA Automation Engineer · enunciado em <a href="docs/Desafio_QA_004.pdf">docs/Desafio_QA_004.pdf</a></span>
+    <nav>
+      <a href="https://danilomedeiros100.github.io/desafio-qa-accenture/" target="_blank" rel="noopener">Relatório ao vivo</a>
+      <a href="https://github.com/danilomedeiros100/desafio-qa-accenture/actions/workflows/tests.yml" target="_blank" rel="noopener">GitHub Actions</a>
+      <a href="https://github.com/danilomedeiros100/desafio-qa-accenture" target="_blank" rel="noopener">Repositório</a>
+      <a href="README.md">README.md</a>
+    </nav>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-label="Imagem ampliada"><img alt=""></div>
+
+<script>
+  // Sistema operacional dos comandos de instalação
+  document.querySelectorAll(".seletor-so button").forEach(function (botao) {
+    botao.addEventListener("click", function () {
+      var escolha = botao.dataset.escolha;
+      document.querySelectorAll(".seletor-so button").forEach(function (b) { b.setAttribute("aria-pressed", String(b === botao)); });
+      document.querySelectorAll("[data-so]").forEach(function (bloco) { bloco.classList.toggle("ativo", bloco.dataset.so === escolha); });
+    });
+  });
+
+  // Copiar comandos
+  document.querySelectorAll(".copiar").forEach(function (botao) {
+    botao.addEventListener("click", function () {
+      var texto = botao.parentElement.textContent.replace(botao.textContent, "").trim();
+      var concluir = function () { botao.textContent = "Copiado"; setTimeout(function () { botao.textContent = "Copiar"; }, 1500); };
+      if (navigator.clipboard) navigator.clipboard.writeText(texto).then(concluir, concluir); else concluir();
+    });
+  });
+
+  // Ampliar imagens
+  var lightbox = document.getElementById("lightbox");
+  document.querySelectorAll(".ampliavel").forEach(function (imagem) {
+    imagem.addEventListener("click", function () {
+      lightbox.querySelector("img").src = imagem.src;
+      lightbox.classList.add("aberto");
+    });
+  });
+  lightbox.addEventListener("click", function () { lightbox.classList.remove("aberto"); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") lightbox.classList.remove("aberto"); });
+
+  // Resultado da última execução no CI (lido do relatório publicado; se estiver offline, só avisa)
+  (function () {
+    var caixa = document.getElementById("status-ci");
+    var texto = document.getElementById("status-ci-texto");
+    var base = "https://danilomedeiros100.github.io/desafio-qa-accenture/widgets/";
+    Promise.all([
+      fetch(base + "summary.json").then(function (r) { return r.json(); }),
+      fetch(base + "executors.json").then(function (r) { return r.json(); }).catch(function () { return []; })
+    ]).then(function (dados) {
+      var s = dados[0].statistic, t = dados[0].time;
+      var execucao = (dados[1][0] && dados[1][0].buildName) || "Última execução";
+      var quando = new Date(t.stop).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
+      var falhas = s.failed + s.broken;
+      caixa.classList.add(falhas ? "erro" : "sucesso");
+      texto.textContent = execucao + " no CI: " + s.passed + "/" + s.total + " cenários passaram · " + quando;
+    }).catch(function () {
+      texto.textContent = "Sem conexão: veja a última execução no relatório online";
+    });
+  })();
+</script>
+</body>
+</html>
