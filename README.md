@@ -184,6 +184,7 @@ O projeto já traz configurações de execução prontas na pasta [`.run/`](.run
 | **2 - Testes de API + Allure** | só a Parte 1 |
 | **3 - Testes de Front-end + Allure** | só a Parte 2 |
 | **4 - Front-end com navegador visível** | Parte 2 com o navegador na tela |
+| **4b - Todos os testes com navegador visível** | API + Front-end, com o navegador na tela |
 | **5 - Abrir Allure Report (última execução)** | só gera e abre o relatório |
 
 Basta escolher e clicar em **Run** (ou `Shift+F10` no Windows/Linux, `Ctrl+R` no macOS). Antes, defina o interpretador do projeto como o `.venv` em *Settings > Project > Python Interpreter*.

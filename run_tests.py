@@ -54,7 +54,7 @@ def executar_testes(args: argparse.Namespace) -> int:
 
     ambiente = os.environ.copy()
     if args.visivel:
-        ambiente.setdefault("HEADLESS", "false")
+        ambiente["HEADLESS"] = "false"  # sobrescreve qualquer HEADLESS herdado da IDE/terminal
         ambiente.setdefault("SLOW_MO", "300")
 
     # a saída passa por um pipe: força as cores no console e o UTF-8 (Windows)
