@@ -15,6 +15,14 @@ from urllib.parse import quote
 DIRETORIO_TEMA = Path(__file__).resolve().parents[2] / "resources" / "allure"
 MARCADOR = "<!-- tema-accenture -->"
 NOME_RELATORIO = "Accenture QA Report"
+TEMA_PADRAO = "light"
+
+# Roda antes do Allure iniciar: define o tema claro como padrão, sem sobrescrever a escolha
+# que o usuário fizer no botão de tema (o Allure guarda em localStorage["allure-theme"]).
+SCRIPT_TEMA_PADRAO = (
+    "<script>try{if(!localStorage.getItem('allure-theme'))"
+    f"localStorage.setItem('allure-theme','{TEMA_PADRAO}')}}catch(e){{}}</script>"
+)
 
 
 def _icone_data_uri() -> str:
@@ -41,6 +49,7 @@ def personalizar_relatorio(diretorio_relatorio: Path) -> Path:
         f"<style>:root {{ --acn-icone: url(\"{icone}\"); }}\n{css}</style>\n"
         f"<script>{js}</script>\n"
     )
+    html = re.sub(r"<head[^>]*>", lambda m: m.group(0) + SCRIPT_TEMA_PADRAO, html, count=1)
     html = html.replace("</head>", injecao + "</head>", 1)
     indice.write_text(html, encoding="utf-8")
     return indice

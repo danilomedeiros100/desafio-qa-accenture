@@ -125,7 +125,7 @@ def after_step(context, step):
             DIRETORIO_SCREENSHOTS.mkdir(parents=True, exist_ok=True)
             caminho = DIRETORIO_SCREENSHOTS / f"{_slug(context.scenario.name)}__{_slug(step.name)}.png"
             caminho.write_bytes(imagem)
-            terminal.acao(f"Screenshot salvo em {caminho.relative_to(DIRETORIO_RAIZ)}")
+            terminal.info(f"Screenshot salvo em {caminho.relative_to(DIRETORIO_RAIZ)}")
 
 
 def after_scenario(context, scenario):
@@ -145,7 +145,7 @@ def after_scenario(context, scenario):
             trace = DIRETORIO_TRACES / f"{_slug(scenario.name)}.zip"
             context.contexto_navegador.tracing.stop(path=str(trace))
             evidence.anexar_arquivo(trace, "Trace do Playwright", "zip")
-            terminal.acao(f"Trace salvo em {trace.relative_to(DIRETORIO_RAIZ)} "
+            terminal.info(f"Trace salvo em {trace.relative_to(DIRETORIO_RAIZ)} "
                           f"(abra com: playwright show-trace {trace.relative_to(DIRETORIO_RAIZ)})")
         video = context.pagina.video if GRAVAR_VIDEO else None
         # janelas extras (ex.: Browser Windows) também gravam vídeo; só o da página principal interessa
@@ -158,7 +158,7 @@ def after_scenario(context, scenario):
             video.save_as(str(caminho_video))
             video.delete()
             evidence.anexar_video(caminho_video)
-            terminal.acao(f"Vídeo salvo em {caminho_video.relative_to(DIRETORIO_RAIZ)}")
+            terminal.info(f"Vídeo salvo em {caminho_video.relative_to(DIRETORIO_RAIZ)}")
         context.contexto_navegador = None
         context.pagina = None
 

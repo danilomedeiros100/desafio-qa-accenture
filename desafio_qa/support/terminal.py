@@ -94,6 +94,11 @@ def acao(mensagem: str) -> None:
         pass
 
 
+def info(mensagem: str) -> None:
+    """Informação só para o terminal (ex.: onde uma evidência foi salva); não vira step no Allure."""
+    escrever(colorir(f"        - {mensagem}", "cinza"))
+
+
 def resultado_passo(nome_status: str, duracao: float, erro: str | None = None) -> None:
     escrever(f"      {rotulo_status(nome_status)} {colorir(f'{duracao:.2f}s', 'cinza')}")
     if erro:
