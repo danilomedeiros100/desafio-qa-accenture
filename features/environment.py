@@ -88,6 +88,7 @@ def before_scenario(context, scenario):
     context.limpezas = []
     context.inicio_cenario = time.perf_counter()
     tags = set(scenario.effective_tags)
+    evidence.categorizar_cenario(tags, scenario.feature.name)
 
     if "api" in tags:
         context.api = ClienteBookStore()
@@ -158,6 +159,7 @@ def after_all(context):
 
     for diretorio in _diretorios_allure(context):
         evidence.registrar_ambiente(diretorio)
+        evidence.registrar_categorias(diretorio)
 
     terminal.resumo(
         context.resultados_cenarios,

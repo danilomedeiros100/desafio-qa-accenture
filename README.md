@@ -10,6 +10,7 @@ O enunciado original está em [`docs/Desafio_QA_004.pdf`](docs/Desafio_QA_004.pd
 - [Estrutura do projeto](#estrutura-do-projeto)
 - [Pré-requisitos](#pré-requisitos)
 - [Instalação](#instalação) ([Linux](#linux) · [macOS](#macos) · [Windows](#windows))
+- [Executando tudo com um comando (terminal ou IDE)](#executando-tudo-com-um-comando-terminal-ou-ide)
 - [Executando os testes](#executando-os-testes)
 - [Saída no terminal](#saída-no-terminal)
 - [Allure Report](#allure-report)
@@ -28,7 +29,7 @@ O enunciado original está em [`docs/Desafio_QA_004.pdf`](docs/Desafio_QA_004.pd
 | UI | Playwright (API síncrona) |
 | API | requests |
 | Massa de dados | Faker (dados aleatórios a cada execução) |
-| Relatórios | Allure Report, impressão detalhada no terminal, HTML, screenshot e trace do Playwright em caso de falha |
+| Relatórios | Allure Report (em português, com tema Accenture), impressão detalhada no terminal, HTML, screenshot e trace do Playwright em caso de falha |
 | CI | GitHub Actions + GitHub Pages (Allure com histórico) |
 
 > O enunciado cita Selenium WebDriver ou Cypress. A escolha pelo Playwright foi deliberada: ele dá suporte nativo a múltiplas janelas, drag and drop HTML5, auto-wait e trace de execução, sem precisar de driver separado.
@@ -55,13 +56,18 @@ Arquivos e pastas seguem a convenção em inglês (`pages`, `steps`, `factories`
 │   │   └── sortable_page.py        # PaginaOrdenavel: embaralhar, ordenar_crescente...
 │   └── support/
 │       ├── terminal.py             # impressão da execução no terminal
-│       └── evidence.py             # anexos e ambiente do Allure
+│       ├── evidence.py             # anexos, categorização (API x Front-end) e ambiente do Allure
+│       └── allure_branding.py      # aplica o tema Accenture no relatório gerado
 ├── features/
 │   ├── api/livraria.feature
 │   ├── frontend/*.feature
 │   ├── steps/*_steps.py            # step definitions (finos: delegam aos Page Objects)
 │   └── environment.py              # hooks: navegador, terminal, anúncios, evidências, limpeza
-├── resources/upload/arquivo_upload.txt   # arquivo .txt usado no upload do formulário
+├── resources/
+│   ├── upload/arquivo_upload.txt   # arquivo .txt usado no upload do formulário
+│   └── allure/                     # tema Accenture do relatório (ícone SVG, CSS e JS)
+├── run_tests.py                    # executa os testes e abre o Allure Report (qualquer SO/IDE)
+├── .run/                           # configurações de execução do PyCharm
 ├── docs/                           # enunciado do desafio
 ├── behave.ini                      # configuração do Behave (Allure como formatter padrão)
 ├── requirements.txt
@@ -150,6 +156,42 @@ scoop install allure          # requer Java: scoop bucket add java; scoop instal
 npm install -g allure-commandline
 ```
 
+## Executando tudo com um comando (terminal ou IDE)
+
+O script [`run_tests.py`](run_tests.py) roda os testes, gera o Allure Report em português com o tema Accenture e abre no navegador. Funciona igual em Linux, macOS e Windows:
+
+```bash
+python run_tests.py                          # tudo (API + Front-end) + relatório
+python run_tests.py --tags @api              # só API
+python run_tests.py --tags @frontend         # só Front-end
+python run_tests.py --tags @frontend --visivel   # vendo o navegador executar
+python run_tests.py --somente-relatorio      # só reabre o relatório da última execução
+python run_tests.py --sem-relatorio          # só executa os testes
+python run_tests.py --servidor               # abre via 'allure open' (servidor local)
+```
+
+O código de saída é o do `behave` (diferente de 0 se algum teste falhar), então o script também serve para pipelines. Sem o Allure CLI instalado, os testes rodam normalmente e o script apenas avisa que não gerou o relatório.
+
+### PyCharm
+
+O projeto já traz configurações de execução prontas na pasta [`.run/`](.run). Ao abrir o projeto, elas aparecem no seletor de execução (canto superior direito):
+
+| Configuração | O que faz |
+|---|---|
+| **1 - Todos os testes + Allure** | roda API + Front-end e abre o relatório |
+| **2 - Testes de API + Allure** | só a Parte 1 |
+| **3 - Testes de Front-end + Allure** | só a Parte 2 |
+| **4 - Front-end com navegador visível** | Parte 2 com o navegador na tela |
+| **5 - Abrir Allure Report (última execução)** | só gera e abre o relatório |
+
+Basta escolher e clicar em **Run** (ou `Shift+F10` no Windows/Linux, `Ctrl+R` no macOS). Antes, defina o interpretador do projeto como o `.venv` em *Settings > Project > Python Interpreter*.
+
+Se as configurações não aparecerem, crie uma manualmente: *Run > Edit Configurations > + > Python*, com **Script** = `run_tests.py`, **Working directory** = pasta do projeto e, em *Modify options*, marque *Emulate terminal in output console* (para as cores).
+
+### VS Code e outras IDEs
+
+Abra o terminal integrado com o `.venv` ativado e rode `python run_tests.py`. No VS Code também dá para usar *Run > Run Without Debugging* com o arquivo `run_tests.py` aberto.
+
 ## Executando os testes
 
 Com o ambiente virtual **ativado**, os comandos do `behave` são iguais em Linux, macOS e Windows:
@@ -174,7 +216,7 @@ Para **ver o navegador** executando, defina as variáveis de ambiente conforme o
 
 > No PowerShell e no cmd as variáveis ficam definidas até fechar o terminal. Para voltar ao modo headless: `$env:HEADLESS="true"` (PowerShell) ou `set HEADLESS=true` (cmd).
 
-Atalhos do `Makefile` (Linux/macOS): `make test`, `make api`, `make frontend`, `make bonus`, `make headed`, `make report`, `make allure`, `make allure-serve`, `make clean`.
+Atalhos do `Makefile` (Linux/macOS): `make run` (tudo + relatório), `make test`, `make api`, `make frontend`, `make bonus`, `make headed`, `make report`, `make allure`, `make allure-serve`, `make clean`.
 
 ## Saída no terminal
 
@@ -227,27 +269,46 @@ Todo `behave` grava os resultados do Allure em `reports/allure-results` (o forma
 - requisição e resposta de cada chamada da API, em JSON (senhas mascaradas);
 - screenshot da tela final de cada cenário de frontend e da tela no momento de uma falha;
 - trace do Playwright anexado aos cenários que falharam;
-- dados do ambiente (URL, navegador, Python, sistema operacional).
+- dados do ambiente (URL, navegador, Python, sistema operacional);
+- categorias de falha em português (validação, timeout, erro de automação, step não implementado).
+
+### Categorização: API x Front-end
+
+Os cenários são agrupados pelo tipo de teste, a partir das tags `@api` e `@frontend`:
+
+- aba **Suítes**: `Testes de API` e `Testes de Front-end`, com as funcionalidades dentro de cada grupo;
+- aba **Comportamentos**: mesmo agrupamento (épico = tipo de teste, funcionalidade = feature);
+- widget **Suítes** da Visão geral: totais por tipo de teste.
+
+### Identidade visual Accenture
+
+O relatório abre em **português** e com o tema da Accenture:
+
+- título **Accenture QA Report** na aba do navegador e na Visão geral, com o ícone `>` da Accenture como favicon;
+- logo "accenture QA REPORT" no menu lateral, com fundo em degradê roxo;
+- faixa de destaque no topo da Visão geral com o total de cenários, o resultado e o período da execução;
+- paleta roxa da marca (links, seleção, botões, gráficos), nos temas claro e escuro. As cores de status (passou, falhou) continuam as padrão, para não confundir a leitura.
+
+O tema fica em [`resources/allure/`](resources/allure) e é aplicado por [`allure_branding.py`](desafio_qa/support/allure_branding.py) depois do `allure generate` (o `run_tests.py` e o CI já fazem isso).
 
 ### Gerar e abrir localmente
 
 Depois de rodar os testes (o Allure CLI precisa estar instalado, ver [Instalação](#instalação)):
 
 ```bash
-allure serve reports/allure-results
+python run_tests.py --somente-relatorio
 ```
 
-Isso gera o relatório numa pasta temporária e abre no navegador. Para gerar uma pasta estática e abrir depois:
+Isso gera `reports/allure-report/index.html` como **arquivo único** (abre direto no navegador, sem servidor) e já abre. Para gerar manualmente:
 
 ```bash
-allure generate reports/allure-results -o reports/allure-report --clean
-allure open reports/allure-report
+allure generate reports/allure-results -o reports/allure-report --clean --lang br --name "Accenture QA Report" --single-file
+python -m desafio_qa.support.allure_branding reports/allure-report
 ```
 
-Os comandos são os mesmos em Linux, macOS e Windows. No Linux/macOS há os atalhos `make allure-serve` e `make allure`.
+Os comandos são os mesmos em Linux, macOS e Windows. `allure serve reports/allure-results` também funciona, mas abre o relatório padrão (em inglês e sem o tema).
 
-> Os resultados se acumulam a cada execução. Para começar um relatório limpo, apague a pasta `reports` antes de rodar (`make clean`, ou `Remove-Item -Recurse reports` no PowerShell, ou `rmdir /s /q reports` no cmd).
-> Abrir o `index.html` direto pelo explorador de arquivos não funciona (o navegador bloqueia o carregamento dos dados); use `allure open` ou `allure serve`.
+> O `run_tests.py` apaga os resultados anteriores a cada execução (use `--manter-resultados` para acumular). Rodando o `behave` direto, os resultados se acumulam; para limpar, apague a pasta `reports` (`make clean`, `Remove-Item -Recurse reports` no PowerShell ou `rmdir /s /q reports` no cmd).
 
 ### No CI
 
@@ -286,7 +347,7 @@ O workflow [`.github/workflows/tests.yml`](.github/workflows/tests.yml) roda em 
 
 1. instala Python 3.12, as dependências e o Chromium;
 2. executa todos os cenários;
-3. instala o Allure CLI, busca o histórico na branch `gh-pages` e gera o Allure Report;
+3. instala o Allure CLI, busca o histórico na branch `gh-pages`, gera o Allure Report em português e aplica o tema Accenture;
 4. publica o relatório no GitHub Pages (apenas na `main`);
 5. anexa `reports/` como artefato;
 6. marca o job como falho se algum cenário falhou (o relatório é publicado mesmo assim).

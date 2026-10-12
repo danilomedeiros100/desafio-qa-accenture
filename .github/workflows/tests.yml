@@ -48,7 +48,7 @@ jobs:
           tar -xzf allure.tgz -C "$RUNNER_TEMP"
           echo "$RUNNER_TEMP/allure-${ALLURE_VERSION}/bin" >> "$GITHUB_PATH"
         env:
-          ALLURE_VERSION: "2.30.0"
+          ALLURE_VERSION: "2.42.0"
 
       - name: Baixar histórico do Allure (gh-pages)
         if: always()
@@ -73,7 +73,9 @@ jobs:
             "reportUrl": "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
           }
           EOF
-          allure generate reports/allure-results -o reports/allure-report --clean
+          allure generate reports/allure-results -o reports/allure-report --clean \
+            --lang br --name "Accenture QA Report"
+          python -m desafio_qa.support.allure_branding reports/allure-report
 
       - name: Publicar Allure Report no GitHub Pages
         if: always() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'

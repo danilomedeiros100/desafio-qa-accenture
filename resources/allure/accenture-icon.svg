@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="200 30 460 460" width="460" height="460">
+  <defs>
+    <linearGradient id="faixa-inferior" x1="220" y1="0" x2="640" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A100FF"/>
+      <stop offset="1" stop-color="#5A0096"/>
+    </linearGradient>
+  </defs>
+  <polygon points="220,382 522,258 640,305 220,477" fill="url(#faixa-inferior)"/>
+  <polygon points="220,42 640,212 640,305 220,137" fill="#B000FF"/>
+</svg>

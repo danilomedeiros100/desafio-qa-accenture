@@ -1,0 +1,186 @@
+/* Tema Accenture para o Allure Report (injetado no index.html após o `allure generate`).
+   Os seletores usam "html:root" para vencer o CSS do Allure, que é carregado depois deste. */
+
+/* ---------------- paleta da marca (tema claro) ---------------- */
+html:root:not([data-theme="dark"]) {
+  --acn-roxo: #A100FF;
+  --acn-roxo-escuro: #7500C0;
+  --acn-roxo-profundo: #460073;
+  --acn-roxo-claro: #BE82FF;
+  --color-link-text: #7500C0;
+  --color-link-text-hover: #A100FF;
+  --color-link-text-active: #460073;
+  --color-intent-primary-bg: #A100FF;
+  --color-intent-primary-bg-hover: #7500C0;
+  --color-intent-primary-bg-active: #460073;
+  --color-intent-primary-text: #7500C0;
+  --color-focus-ring: #BE82FF;
+  --color-row-bg-selected: rgba(161, 0, 255, .10);
+  --color-row-bg-selected-hover: rgba(161, 0, 255, .14);
+}
+
+/* ---------------- paleta da marca (tema escuro) ---------------- */
+html:root[data-theme="dark"] {
+  --acn-roxo: #A100FF;
+  --acn-roxo-escuro: #7500C0;
+  --acn-roxo-profundo: #460073;
+  --acn-roxo-claro: #BE82FF;
+  --color-bg-canvas: #120a1c;
+  --color-bg-primary: #170e22;
+  --color-bg-secondary: #120a1c;
+  --color-bg-raised: #1d1229;
+  --color-link-text: #BE82FF;
+  --color-link-text-hover: #DCAFFF;
+  --color-link-text-active: #A100FF;
+  --color-intent-primary-bg: #A100FF;
+  --color-intent-primary-bg-hover: #7500C0;
+  --color-intent-primary-bg-active: #460073;
+  --color-intent-primary-text: #BE82FF;
+  --color-focus-ring: #BE82FF;
+  --color-row-bg-selected: rgba(161, 0, 255, .20);
+  --color-row-bg-selected-hover: rgba(161, 0, 255, .26);
+}
+
+/* gráficos categóricos em tons de roxo (os status passou/falhou mantêm as cores semânticas) */
+html:root {
+  --color-chart-categorical-1: #A100FF;
+  --color-chart-categorical-2: #7500C0;
+  --color-chart-categorical-3: #BE82FF;
+  --color-chart-categorical-4: #460073;
+  --color-chart-categorical-5: #DCAFFF;
+  --color-chart-categorical-6: #5A0096;
+}
+
+/* ---------------- menu lateral: sempre escuro, com degradê roxo ---------------- */
+.side-nav {
+  background: linear-gradient(180deg, #0f0019 0%, #24003f 55%, #460073 100%) !important;
+  border-inline-end: 0 !important;
+  --color-text-primary: rgba(255, 255, 255, .94);
+  --color-text-secondary: rgba(255, 255, 255, .72);
+  --color-text-muted: rgba(255, 255, 255, .55);
+  --color-icon-primary: rgba(255, 255, 255, .85);
+  --color-icon-secondary: rgba(255, 255, 255, .65);
+  --color-icon-muted: rgba(255, 255, 255, .5);
+  --color-border-subtle: rgba(255, 255, 255, .08);
+  --color-border-default: rgba(255, 255, 255, .16);
+  --color-control-bg: rgba(255, 255, 255, .10);
+  --color-control-bg-hover: rgba(255, 255, 255, .16);
+  --color-control-bg-active: rgba(255, 255, 255, .22);
+  --color-control-bg-ghost-hover: rgba(255, 255, 255, .08);
+  --color-nav-item-bg-hover: rgba(255, 255, 255, .08);
+  --color-nav-item-bg-active: rgba(161, 0, 255, .38);
+  --color-nav-item-bg-active-hover: rgba(161, 0, 255, .48);
+  --color-nav-item-text-active: #ffffff;
+  --color-nav-item-icon-active: #ffffff;
+  color: rgba(255, 255, 255, .94);
+}
+
+.side-nav__link_active {
+  box-shadow: inset 3px 0 0 #A100FF;
+}
+
+/* logo: ícone ">" + "accenture" */
+.side-nav__brand-icon {
+  background-image: var(--acn-icone) !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  filter: drop-shadow(0 0 10px rgba(161, 0, 255, .55));
+}
+
+.side-nav__brand-text {
+  font-size: 0 !important;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1;
+}
+
+.side-nav__brand-text::before {
+  content: "accenture";
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -.03em;
+  color: #ffffff;
+}
+
+.side-nav__brand-text::after {
+  content: "QA REPORT";
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .28em;
+  color: #DCAFFF;
+  margin-top: 4px;
+}
+
+/* ---------------- faixa de destaque da Visão geral ---------------- */
+.acn-banner {
+  position: relative;
+  overflow: hidden;
+  margin: 16px 16px 4px;
+  padding: 26px 28px;
+  border-radius: 14px;
+  color: #ffffff;
+  background:
+    radial-gradient(circle at 92% 20%, rgba(220, 175, 255, .35), transparent 45%),
+    linear-gradient(120deg, #1a0030 0%, #460073 45%, #A100FF 100%);
+  box-shadow: 0 10px 30px rgba(70, 0, 115, .35);
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.acn-banner__icone {
+  width: 64px;
+  height: 64px;
+  flex: none;
+  background: var(--acn-icone) center / contain no-repeat;
+  filter: brightness(1.25) drop-shadow(0 0 14px rgba(255, 255, 255, .35));
+}
+
+.acn-banner__titulo {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+}
+
+.acn-banner__subtitulo {
+  margin: 4px 0 12px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, .82);
+}
+
+.acn-banner__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.acn-banner__chip {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .14);
+  border: 1px solid rgba(255, 255, 255, .22);
+}
+
+.acn-banner__chip_sucesso { background: rgba(36, 199, 120, .28); border-color: rgba(36, 199, 120, .6); }
+.acn-banner__chip_falha { background: rgba(255, 77, 79, .30); border-color: rgba(255, 77, 79, .65); }
+
+.acn-banner__marca {
+  position: absolute;
+  right: -30px;
+  bottom: -60px;
+  width: 260px;
+  height: 260px;
+  background: var(--acn-icone) center / contain no-repeat;
+  opacity: .12;
+  pointer-events: none;
+}
+
+@media (max-width: 700px) {
+  .acn-banner { flex-direction: column; align-items: flex-start; }
+  .acn-banner__titulo { font-size: 22px; }
+}

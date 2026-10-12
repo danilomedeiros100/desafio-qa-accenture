@@ -9,6 +9,9 @@ import platform
 from pathlib import Path
 
 import allure
+import allure_commons
+from allure_commons.model2 import Label
+from allure_commons.types import LabelType
 
 from desafio_qa import config
 
@@ -36,6 +39,50 @@ def anexar_texto(nome: str, conteudo: str) -> None:
 
 def anexar_arquivo(caminho: Path, nome: str, extensao: str) -> None:
     allure.attach.file(str(caminho), name=nome, extension=extensao)
+
+
+TIPOS_DE_TESTE = {"api": "Testes de API", "frontend": "Testes de Front-end"}
+
+# Classificação das falhas exibida na aba "Categorias" do Allure
+CATEGORIAS_DE_FALHA = [
+    {"name": "Falha de validação (assert)", "matchedStatuses": ["failed"]},
+    {"name": "Tempo esgotado (timeout)", "matchedStatuses": ["broken", "failed"],
+     "messageRegex": ".*Timeout.*"},
+    {"name": "Erro de automação (exceção no código de teste)", "matchedStatuses": ["broken"]},
+    {"name": "Steps não implementados", "matchedStatuses": ["skipped"],
+     "messageRegex": ".*undefined.*"},
+]
+
+
+def categorizar_cenario(tags: set[str], funcionalidade: str) -> None:
+    """Agrupa o cenário por tipo de teste (API x Front-end) nas abas Suítes e Comportamentos.
+
+    O allure-behave não implementa `allure.dynamic.label`, então os rótulos são adicionados
+    direto no resultado do cenário em andamento (já criado quando o before_scenario roda)."""
+    resultado = _resultado_em_andamento()
+    if resultado is None:  # behave executado sem o formatter do Allure
+        return
+    tipo = next((nome for tag, nome in TIPOS_DE_TESTE.items() if tag in tags), "Outros testes")
+    resultado.labels.extend([
+        Label(name=LabelType.PARENT_SUITE, value=tipo),
+        Label(name=LabelType.SUITE, value=funcionalidade),
+        Label(name=LabelType.EPIC, value=tipo),
+    ])
+
+
+def _resultado_em_andamento():
+    for plugin in allure_commons.plugin_manager.get_plugins():
+        logger = getattr(plugin, "logger", None)
+        if logger is not None and hasattr(logger, "get_test"):
+            return logger.get_test(None)
+    return None
+
+
+def registrar_categorias(diretorio_resultados: Path) -> None:
+    if diretorio_resultados.is_dir():
+        (diretorio_resultados / "categories.json").write_text(
+            json.dumps(CATEGORIAS_DE_FALHA, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
 
 
 def registrar_ambiente(diretorio_resultados: Path) -> None:

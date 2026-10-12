@@ -1,4 +1,4 @@
-.PHONY: install test api frontend bonus headed report allure allure-serve clean
+.PHONY: install run test api frontend bonus headed report allure allure-serve clean
 
 install:
 	python3 -m venv .venv && . .venv/bin/activate && pip install -r requirements.txt && python -m playwright install chromium
@@ -21,11 +21,14 @@ headed:
 report:
 	behave -f html -o reports/report.html
 
+run:
+	python run_tests.py
+
 allure:
-	allure generate reports/allure-results -o reports/allure-report --clean && allure open reports/allure-report
+	python run_tests.py --somente-relatorio
 
 allure-serve:
-	allure serve reports/allure-results
+	python run_tests.py --somente-relatorio --servidor
 
 clean:
 	rm -rf reports
