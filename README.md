@@ -251,7 +251,7 @@ Os comandos são os mesmos em Linux, macOS e Windows. No Linux/macOS há os atal
 
 ### No CI
 
-A cada push na `main`, o GitHub Actions gera o Allure Report com **histórico das últimas 20 execuções** e publica no GitHub Pages:
+A cada push na `main`, o GitHub Actions gera o Allure Report com **histórico (tendência) das execuções anteriores** e publica no GitHub Pages:
 
 **https://danilomedeiros100.github.io/desafio-qa-accenture/**
 
@@ -286,7 +286,7 @@ O workflow [`.github/workflows/tests.yml`](.github/workflows/tests.yml) roda em 
 
 1. instala Python 3.12, as dependências e o Chromium;
 2. executa todos os cenários;
-3. busca o histórico na branch `gh-pages` e gera o Allure Report;
+3. instala o Allure CLI, busca o histórico na branch `gh-pages` e gera o Allure Report;
 4. publica o relatório no GitHub Pages (apenas na `main`);
 5. anexa `reports/` como artefato;
 6. marca o job como falho se algum cenário falhou (o relatório é publicado mesmo assim).
