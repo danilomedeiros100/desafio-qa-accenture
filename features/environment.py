@@ -63,7 +63,7 @@ def before_all(context):
         "DESAFIO QA AUTOMATION - demoqa.com",
         [
             f"URL base: {URL_BASE}",
-            f"Navegador: {NAVEGADOR} ({'headless' if HEADLESS else 'visível'})",
+            f"Navegador (front-end): {NAVEGADOR} ({'headless' if HEADLESS else 'visível'})",
             f"Filtro de tags: {tags}",
         ],
     )

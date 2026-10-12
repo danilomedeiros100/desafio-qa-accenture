@@ -2,7 +2,7 @@
 
 Usa apenas caracteres ASCII nos marcadores para funcionar em qualquer terminal
 (Linux, macOS e Windows), e cores ANSI somente quando a saída é um terminal interativo.
-Defina NO_COLOR=1 para desligar as cores.
+Defina NO_COLOR=1 para desligar as cores ou FORCE_COLOR=1 para forçá-las (ex.: saída redirecionada).
 """
 from __future__ import annotations
 
@@ -42,7 +42,7 @@ def preparar_terminal() -> None:
         sys.stdout.reconfigure(errors="replace")
     if os.name == "nt":
         os.system("")  # habilita sequências ANSI no console do Windows 10+
-    _usar_cores = sys.stdout.isatty() and not os.getenv("NO_COLOR")
+    _usar_cores = (sys.stdout.isatty() or bool(os.getenv("FORCE_COLOR"))) and not os.getenv("NO_COLOR")
 
 
 def colorir(texto: str, *cores: str) -> str:

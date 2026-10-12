@@ -170,6 +170,8 @@ python run_tests.py --sem-relatorio          # só executa os testes
 python run_tests.py --servidor               # abre via 'allure open' (servidor local)
 ```
 
+Além de imprimir a execução no console (com cores), o script salva uma **cópia limpa do log**, sem códigos de cor, em `reports/execucao.log`, boa para ler depois, anexar ou comparar execuções.
+
 O código de saída é o do `behave` (diferente de 0 se algum teste falhar), então o script também serve para pipelines. Sem o Allure CLI instalado, os testes rodam normalmente e o script apenas avisa que não gerou o relatório.
 
 ### PyCharm
@@ -329,6 +331,7 @@ O relatório também fica disponível como artefato `relatorios` em cada execuç
 | `DEFAULT_TIMEOUT_MS` | `15000` | timeout padrão do Playwright |
 | `API_TIMEOUT_S` | `30` | timeout das requisições da API |
 | `NO_COLOR` | (vazio) | qualquer valor desliga as cores no terminal |
+| `FORCE_COLOR` | (vazio) | qualquer valor força as cores mesmo com a saída redirecionada |
 
 ## Evidências e outros relatórios
 
@@ -336,6 +339,7 @@ O relatório também fica disponível como artefato `relatorios` em cada execuç
 |---|---|
 | `reports/allure-results/` | resultados brutos do Allure |
 | `reports/allure-report/` | Allure Report gerado (`allure generate`) |
+| `reports/execucao.log` | log da execução sem códigos de cor (gerado pelo `run_tests.py`) |
 | `reports/report.html` | relatório HTML simples (`behave -f html -o reports/report.html`) |
 | `reports/screenshots/` | screenshot da página no step que falhou |
 | `reports/traces/` | trace do Playwright do cenário que falhou. Abra com `playwright show-trace reports/traces/<arquivo>.zip` |

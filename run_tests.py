@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -25,6 +26,9 @@ from desafio_qa.support.allure_branding import NOME_RELATORIO, personalizar_rela
 DIRETORIO_RAIZ = Path(__file__).resolve().parent
 RESULTADOS = DIRETORIO_RAIZ / "reports" / "allure-results"
 RELATORIO = DIRETORIO_RAIZ / "reports" / "allure-report"
+ARQUIVO_LOG = DIRETORIO_RAIZ / "reports" / "execucao.log"
+CODIGOS_DE_COR = re.compile(r"\x1b\[[0-9;]*m")
+LINHAS_IGNORADAS = ("USING RUNNER:",)  # ruído impresso sempre pelo behave 1.3
 IDIOMA_RELATORIO = "br"  # português (Brasil)
 
 
@@ -53,8 +57,24 @@ def executar_testes(args: argparse.Namespace) -> int:
         ambiente.setdefault("HEADLESS", "false")
         ambiente.setdefault("SLOW_MO", "300")
 
+    # a saída passa por um pipe: força as cores no console e o UTF-8 (Windows)
+    ambiente["PYTHONIOENCODING"] = "utf-8"
+    if sys.stdout.isatty():
+        ambiente.setdefault("FORCE_COLOR", "1")
+
     comando = [sys.executable, "-m", "behave", *(f"--tags={t}" for t in args.tags)]
-    return subprocess.call(comando, cwd=DIRETORIO_RAIZ, env=ambiente)
+    ARQUIVO_LOG.parent.mkdir(parents=True, exist_ok=True)
+    with ARQUIVO_LOG.open("w", encoding="utf-8") as log, subprocess.Popen(
+        comando, cwd=DIRETORIO_RAIZ, env=ambiente, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        text=True, encoding="utf-8", errors="replace", bufsize=1,
+    ) as processo:
+        for linha in processo.stdout:
+            if linha.startswith(LINHAS_IGNORADAS):
+                continue
+            print(linha, end="", flush=True)
+            log.write(CODIGOS_DE_COR.sub("", linha))
+    print(f"\nLog da execução (sem cores): {ARQUIVO_LOG}")
+    return processo.returncode
 
 
 def gerar_relatorio(args: argparse.Namespace) -> None:
@@ -89,6 +109,8 @@ def gerar_relatorio(args: argparse.Namespace) -> None:
 
 
 def main() -> int:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(errors="replace")
     args = ler_argumentos()
     codigo_saida = 0 if args.somente_relatorio else executar_testes(args)
     if not args.sem_relatorio:
