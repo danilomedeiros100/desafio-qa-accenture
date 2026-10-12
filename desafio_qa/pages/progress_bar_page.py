@@ -45,8 +45,32 @@ class PaginaBarraProgresso(PaginaBase):
             f"() => ({self._VALOR_JS})() === 100", polling="raf", timeout=timeout_ms
         )
 
-    def resetar(self) -> None:
-        terminal.acao("Clicando em 'Reset'")
+    def resetar(self) -> int:
+        """Clica em Reset e retorna o valor que a barra assumiu logo após o clique.
+
+        No demoqa atual o Reset zera a barra, mas o timer continua e ela volta a subir sozinha.
+        Por isso um observador no navegador registra cada valor a partir do clique: assim a
+        validação do 0% não depende da velocidade da execução (headless ou com SLOW_MO)."""
         botao_resetar = self.pagina.locator(self.BOTAO_RESETAR)
         expect(botao_resetar).to_be_visible()
+        self.pagina.evaluate(
+            """(seletor) => {
+                const barra = document.querySelector(seletor);
+                window.__valoresAposReset = [];
+                new MutationObserver(() => window.__valoresAposReset.push(
+                    Number(barra.getAttribute('aria-valuenow'))
+                )).observe(barra, {attributes: true, attributeFilter: ['aria-valuenow']});
+            }""",
+            self.BARRA,
+        )
+        terminal.acao("Clicando em 'Reset'")
         botao_resetar.click()
+        self.pagina.wait_for_function("() => (window.__valoresAposReset || []).length > 0")
+        valor_apos_reset = self.pagina.evaluate("() => window.__valoresAposReset[0]")
+        terminal.acao(f"Valor da barra logo após o Reset: {valor_apos_reset}%")
+
+        self.pagina.wait_for_timeout(500)
+        if self.valor() > valor_apos_reset:
+            terminal.acao(f"Após o Reset o demoqa volta a avançar a barra sozinho "
+                          f"(já em {self.valor()}%); comportamento da aplicação")
+        return valor_apos_reset

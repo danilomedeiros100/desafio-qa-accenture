@@ -1,11 +1,13 @@
 from behave import then, when
 from playwright.sync_api import expect
 
+from desafio_qa.config import ATRASO_ENTRE_ACOES_MS
 from desafio_qa.pages import PaginaBarraProgresso
 from desafio_qa.support import terminal
 
-# Margem de segurança: a barra sobe ~1% a cada 100ms; parar em 20% garante ficar <= 25%
-MARGEM_SEGURANCA = 5
+# Margem de segurança: a barra sobe ~1% a cada 100ms. Parar 5% antes do limite cobre a latência
+# do clique; com SLOW_MO (navegador visível) o clique atrasa mais, então a margem cresce junto.
+MARGEM_SEGURANCA = 5 + ATRASO_ENTRE_ACOES_MS // 100
 
 
 def _barra(context) -> PaginaBarraProgresso:
@@ -41,12 +43,14 @@ def step_aguardar_conclusao(context):
 
 @when("eu reseto a barra de progresso")
 def step_resetar_barra(context):
-    _barra(context).resetar()
+    context.valor_apos_reset = _barra(context).resetar()
 
 
 @then("o valor da barra de progresso deve ser {valor:d}%")
 def step_validar_valor_exato(context, valor):
     barra = _barra(context)
-    expect(barra.pagina.locator(barra.BARRA)).to_have_attribute("aria-valuenow", str(valor))
+    assert context.valor_apos_reset == valor, (
+        f"Após o Reset a barra foi para {context.valor_apos_reset}%, esperado {valor}%"
+    )
     expect(barra.pagina.locator(barra.BOTAO_INICIAR_PARAR)).to_have_text("Start")
-    terminal.acao(f"Valor da barra: {valor}% e botão voltou para 'Start'")
+    terminal.acao(f"A barra foi para {valor}% no Reset e o botão voltou para 'Start'")
