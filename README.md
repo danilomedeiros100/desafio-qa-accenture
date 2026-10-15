@@ -366,12 +366,12 @@ O workflow [`.github/workflows/tests.yml`](.github/workflows/tests.yml) roda em 
 
 1. instala Python 3.12, as dependências e o Chromium;
 2. executa todos os cenários, gravando vídeo dos cenários de front-end;
-3. instala o Allure CLI, busca o histórico na branch `gh-pages`, gera o relatório em português e aplica o tema Accenture;
+3. instala o Allure CLI, baixa o histórico do relatório já publicado (para o gráfico de tendência), gera o relatório em português e aplica o tema Accenture;
 4. publica o relatório no [GitHub Pages](https://danilomedeiros100.github.io/desafio-qa-accenture/) (apenas na `main`);
 5. anexa `reports/` como artefato `relatorios` da execução;
 6. marca o job como falho se algum cenário falhou (o relatório é publicado mesmo assim).
 
-Para usar num fork: na primeira execução o workflow cria a branch `gh-pages`; depois, configure *Settings > Pages > Source: Deploy from a branch > `gh-pages` / root*.
+O relatório é publicado direto pelo GitHub Actions, sem branch extra: o repositório tem uma única branch, a `main`. Para usar num fork, configure *Settings > Pages > Build and deployment > Source: GitHub Actions*.
 
 ### Decisões técnicas
 

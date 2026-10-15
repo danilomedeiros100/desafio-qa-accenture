@@ -6,11 +6,14 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write   # publicar o Allure Report na branch gh-pages
+  contents: read
 
 concurrency:
   group: testes-${{ github.ref }}
   cancel-in-progress: true
+
+env:
+  URL_RELATORIO: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
 
 jobs:
   behave:
@@ -52,40 +55,36 @@ jobs:
         env:
           ALLURE_VERSION: "2.42.0"
 
-      - name: Baixar histórico do Allure (gh-pages)
+      - name: Baixar histórico do relatório publicado
         if: always()
-        uses: actions/checkout@v4
-        continue-on-error: true   # na primeira execução a branch ainda não existe
-        with:
-          ref: gh-pages
-          path: gh-pages
+        continue-on-error: true   # na primeira publicação ainda não existe histórico
+        run: |
+          mkdir -p reports/allure-results/history
+          for arquivo in history.json history-trend.json duration-trend.json categories-trend.json retry-trend.json; do
+            curl -sSfL -o "reports/allure-results/history/$arquivo" "${URL_RELATORIO}history/$arquivo" || true
+          done
 
       - name: Gerar Allure Report
         if: always()
         run: |
-          if [ -d gh-pages/history ]; then
-            cp -r gh-pages/history reports/allure-results/history
-          fi
           cat > reports/allure-results/executor.json <<EOF
           {
             "name": "GitHub Actions",
             "type": "github",
             "buildName": "Execução #${{ github.run_number }}",
             "buildUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-            "reportUrl": "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+            "reportUrl": "${URL_RELATORIO}"
           }
           EOF
           allure generate reports/allure-results -o reports/allure-report --clean \
             --lang br --name "Accenture QA Report"
           python -m desafio_qa.support.allure_branding reports/allure-report
 
-      - name: Publicar Allure Report no GitHub Pages
+      - name: Preparar publicação no GitHub Pages
         if: always() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@v4
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: reports/allure-report
+          path: reports/allure-report
 
       - name: Publicar relatórios como artefato
         if: always()
@@ -97,3 +96,19 @@ jobs:
       - name: Falhar o job se algum teste falhou
         if: steps.testes.outcome != 'success'
         run: exit 1
+
+  # Publica o Allure Report direto no GitHub Pages (sem branch gh-pages), mesmo se algum teste falhar
+  publicar-relatorio:
+    needs: behave
+    if: always() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.behave.result != 'cancelled'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publicacao.outputs.page_url }}
+    steps:
+      - name: Publicar no GitHub Pages
+        id: publicacao
+        uses: actions/deploy-pages@v4
