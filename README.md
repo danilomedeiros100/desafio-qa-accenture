@@ -12,7 +12,7 @@
 ![Behave](https://img.shields.io/badge/BDD-Behave_(Gherkin_PT--BR)-23D96C?logo=cucumber&logoColor=white)
 ![Playwright](https://img.shields.io/badge/Playwright-1.45+-2EAD33?logo=playwright&logoColor=white)
 
-### [📊 Ver o relatório ao vivo](https://danilomedeiros100.github.io/desafio-qa-accenture/) · [⚙️ Execuções no GitHub Actions](https://github.com/danilomedeiros100/desafio-qa-accenture/actions/workflows/tests.yml) · [🚀 Rodar em 1 comando](#-rodando-em-1-comando)
+### [Ver o relatório ao vivo](https://danilomedeiros100.github.io/desafio-qa-accenture/) · [Execuções no GitHub Actions](https://github.com/danilomedeiros100/desafio-qa-accenture/actions/workflows/tests.yml) · [Rodar em 1 comando](#rodando-em-1-comando)
 
 <sub>Depois de clonar, abra o <a href="README.html"><code>README.html</code></a> no navegador (dois cliques, sem servidor) para ver a apresentação visual do projeto.</sub>
 
@@ -22,29 +22,29 @@
 
 ---
 
-## ✨ Destaques
+## Destaques
 
 | | |
 |---|---|
-| ✅ **Desafio 100% coberto, com o bônus** | Parte 1 (API) e todos os 5 fluxos da Parte 2 (Front-end), incluindo os 12 registros dinâmicos via Gherkin: **7 cenários, 63 steps** |
-| 🚀 **Um único comando** | `python run_tests.py` executa tudo, gera o relatório e **já abre no navegador**. Igual no Linux, macOS e Windows, e com botões prontos no PyCharm |
-| 📊 **Allure com a cara da Accenture** | Em português, com logo, cores da marca e faixa de resumo. Testes separados em **API** e **Front-end** |
-| 🌐 **Relatório publicado a cada push** | O GitHub Actions roda tudo e publica no [GitHub Pages](https://danilomedeiros100.github.io/desafio-qa-accenture/), com histórico de tendência e link para a execução |
-| 🎬 **Evidência de tudo** | **Vídeo** de cada cenário de front, screenshot da tela final, **requisição e resposta em JSON** de cada chamada da API, trace do Playwright em falhas |
-| 🖥️ **Execução legível no terminal** | Cada step aparece em tempo real com o que foi feito (cliques, campos, chamadas HTTP com status e tempo), mais um log limpo salvo em arquivo |
-| 🧱 **Código organizado** | BDD em português, Page Objects, cliente de API, massa de dados aleatória (Faker) e steps finos |
-| 🛡️ **Estável de verdade** | Anúncios bloqueados, esperas inteligentes e três comportamentos instáveis do demoqa identificados, tratados e documentados |
+| **Desafio 100% coberto, com o bônus** | Parte 1 (API) e todos os 5 fluxos da Parte 2 (Front-end), incluindo os 12 registros dinâmicos via Gherkin: **7 cenários, 63 steps** |
+| **Um único comando** | `python run_tests.py` executa tudo, gera o relatório e **já abre no navegador**. Igual no Linux, macOS e Windows, e com botões prontos no PyCharm |
+| **Allure com a cara da Accenture** | Em português, com logo, cores da marca e faixa de resumo. Testes separados em **API** e **Front-end** |
+| **Relatório publicado a cada push** | O GitHub Actions roda tudo e publica no [GitHub Pages](https://danilomedeiros100.github.io/desafio-qa-accenture/), com histórico de tendência e link para a execução |
+| **Evidência de tudo** | **Vídeo** de cada cenário de front, screenshot da tela final, **requisição e resposta em JSON** de cada chamada da API, trace do Playwright em falhas |
+| **Execução legível no terminal** | Cada step aparece em tempo real com o que foi feito (cliques, campos, chamadas HTTP com status e tempo), mais um log limpo salvo em arquivo |
+| **Código organizado** | BDD em português, Page Objects, cliente de API, massa de dados aleatória (Faker) e steps finos |
+| **Estável de verdade** | Anúncios bloqueados, esperas inteligentes e três comportamentos instáveis do demoqa identificados, tratados e documentados |
 
-## 🎬 Veja rodando
+## Veja rodando
 
 <div align="center">
 <img src="docs/images/demo-execucao.gif" alt="Formulário sendo preenchido com dados aleatórios e lista ordenada por drag and drop" width="85%">
 <br><sub>Gravação real da automação: formulário preenchido com dados aleatórios, popup validado campo a campo e lista ordenada com drag and drop.</sub>
 </div>
 
-## 🚀 Rodando em 1 comando
+## Rodando em 1 comando
 
-Com Python 3.10+ instalado ([detalhes por sistema operacional](#-instalação)):
+Com Python 3.10+ instalado ([detalhes por sistema operacional](#instalação)):
 
 ```bash
 git clone https://github.com/danilomedeiros100/desafio-qa-accenture.git
@@ -66,11 +66,11 @@ Pronto: os testes de API e Front-end rodam, o resumo aparece no terminal e o **A
 | Gravar vídeo de cada cenário | `python run_tests.py --video` |
 | Reabrir o relatório da última execução | `python run_tests.py --somente-relatorio` |
 
-> O relatório local precisa do Allure CLI ([instalação](#-instalação)). Sem ele, os testes rodam normalmente e o script só avisa. O relatório publicado no GitHub Pages não precisa de nada instalado.
+> O relatório local precisa do Allure CLI ([instalação](#instalação)). Sem ele, os testes rodam normalmente e o script só avisa. O relatório publicado no GitHub Pages não precisa de nada instalado.
 
-**No PyCharm**, as configurações já vêm prontas no projeto: escolha **"1 - Todos os testes + Allure"** no seletor do canto superior direito e clique em ▶ Run.
+**No PyCharm**, as configurações já vêm prontas no projeto: escolha **"1 - Todos os testes + Allure"** no seletor do canto superior direito e clique em Run.
 
-## 📊 O relatório
+## O relatório
 
 Publicado a cada push em **https://danilomedeiros100.github.io/desafio-qa-accenture/**
 
@@ -92,7 +92,7 @@ O que o relatório entrega:
 - **Categorias de falha** em português (validação, timeout, erro de automação) e dados do ambiente;
 - No CI: **histórico de tendência** entre execuções e **link para a execução** do GitHub Actions.
 
-## 🖥️ A execução no terminal
+## A execução no terminal
 
 <div align="center">
 <img src="docs/images/terminal-api.png" alt="Saída colorida da execução dos testes de API no terminal" width="80%">
@@ -100,7 +100,7 @@ O que o relatório entrega:
 
 Tudo em tempo real e em português: cenário, cada step com resultado e tempo, as ações dentro do step (no front: cliques, campos preenchidos, valores sorteados, arrastos do drag and drop) e um resumo final. Uma cópia sem cores fica em `reports/execucao.log` para leitura e anexos.
 
-## ✅ Cobertura do desafio
+## Cobertura do desafio
 
 | Enunciado | Cenário | Destaque |
 |---|---|---|
@@ -114,7 +114,7 @@ Tudo em tempo real e em português: cenário, cada step com resultado e tempo, a
 
 Critérios do enunciado: **BDD com Cucumber** (Behave é o Cucumber do Python, com Gherkin em português), **Page Objects**, código organizado e **versionado no GitHub**.
 
-## 🏗️ Como funciona
+## Como funciona
 
 ```mermaid
 flowchart LR
@@ -133,10 +133,10 @@ flowchart LR
 
 ---
 
-## 📚 Documentação completa
+## Documentação completa
 
 - [Estrutura do projeto](#estrutura-do-projeto)
-- [Instalação](#-instalação) ([Linux](#linux) · [macOS](#macos) · [Windows](#windows))
+- [Instalação](#instalação) ([Linux](#linux) · [macOS](#macos) · [Windows](#windows))
 - [Todas as formas de executar](#todas-as-formas-de-executar)
 - [Allure Report em detalhes](#allure-report-em-detalhes)
 - [Variáveis de ambiente](#variáveis-de-ambiente)
@@ -186,7 +186,7 @@ Arquivos e pastas seguem a convenção em inglês (`pages`, `steps`, `factories`
 └── .github/workflows/tests.yml     # pipeline de CI
 ```
 
-### 💻 Instalação
+### Instalação
 
 | Ferramenta | Versão | Para quê |
 |---|---|---|
@@ -397,7 +397,7 @@ Para usar num fork: na primeira execução o workflow cria a branch `gh-pages`; 
 | `Executable doesn't exist ... chromium` | Rode `python -m playwright install chromium` com o venv ativado |
 | Linux: erro de biblioteca ausente ao abrir o Chromium | `python -m playwright install --with-deps chromium` |
 | `behave: command not found` / `'behave' não é reconhecido` | Ative o venv (`source .venv/bin/activate` ou `.\.venv\Scripts\Activate.ps1`) |
-| `allure: command not found` / relatório não abre | Instale o Allure CLI e o Java (ver [Instalação](#-instalação)) |
+| `allure: command not found` / relatório não abre | Instale o Allure CLI e o Java (ver [Instalação](#instalação)) |
 | `FileNotFoundError ... allure-results` | Duas execuções rodando ao mesmo tempo; rode uma por vez |
 | Timeouts ao carregar o demoqa | O site às vezes fica lento; tente de novo ou aumente `DEFAULT_TIMEOUT_MS` |
 | Caracteres estranhos no lugar de cores (Windows antigo) | Defina `NO_COLOR=1` |
